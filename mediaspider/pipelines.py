@@ -1,0 +1,45 @@
+
+import pymysql
+from scrapy import Request
+from scrapy.exceptions import DropItem
+from scrapy.pipelines.images import ImagesPipeline
+from mediaspider.msql import CreateReply,InsertVReply
+from mediaspider.items import DanmuInfoItem,VideoInfoItem,ReplyInfoItem
+
+class MysqlPipeline():
+    def __init__(self, host, database, user, password, port):
+        self.host = host
+        self.database = database
+        self.user = user
+        self.password = password
+        self.port = port
+    
+    @classmethod
+    def from_crawler(cls, crawler):
+        return cls(
+            host=crawler.settings.get('MYSQL_HOST'),
+            database=crawler.settings.get('MYSQL_DBNAME'),
+            user=crawler.settings.get('MYSQL_USER'),
+            password=crawler.settings.get('MYSQL_PASSWD'),
+            port=crawler.settings.get('MYSQL_PORT'),
+        )
+    
+    def open_spider(self, spider):
+        
+        self.conn = pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database,
+                                  port=self.port)
+        self.cursor = self.conn.cursor()
+        CreateReply(self.cursor,self.conn)
+    
+    def close_spider(self, spider):
+
+        self.conn.close()
+    
+    def process_item(self, item, spider):
+       
+        if isinstance(item, ReplyInfoItem): 
+            
+            return item 
+        elif isinstance(item, DanmuInfoItem): 
+            return item
+        
