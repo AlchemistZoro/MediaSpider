@@ -5,6 +5,16 @@ import logging
 import random
 import time
 
+from mediaspider.settings import USER_AGENT_LIST
+
+#随机设置user-agent
+class RandomUserAgentMiddleware(object):
+    def process_request(self, request, spider):
+        rand_use  = random.choice(USER_AGENT_LIST)
+        if rand_use:
+            request.headers.setdefault('User-Agent', rand_use)
+
+
 class ProxyMiddleware(object):
     def __init__(self, proxy_url):
         self.logger = logging.getLogger(__name__)

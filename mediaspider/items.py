@@ -6,7 +6,7 @@
 from scrapy import Item,Field
 
 
-class VideoInfoItem(Item):
+class VInfoItem(Item):
     VinfoItem=Field()
  
 class ReplyInfoItem(Item):
@@ -15,8 +15,8 @@ class ReplyInfoItem(Item):
 class DanmuInfoItem(Item):
     DanmuItem=Field()
 
-class UserInfoItem(Item):
-    UserItem=Field()
+class UInfoItem(Item):
+    UInfoItem=Field()
 
 
 

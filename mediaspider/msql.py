@@ -4,9 +4,9 @@ import pymysql
 import argparse
 import time
 
+sqldic={
 
-
-createTableVinfo='''
+'createTableVinfo':'''
 create table if not exists Vinfo(bvid varchar(31) primary key,
                             aid varchar(31),
                             cid varchar(31),
@@ -32,8 +32,8 @@ create table if not exists Vinfo(bvid varchar(31) primary key,
                             now_rank int(10),
                             his_rank int(10),                            
                             mid varchar(31)
-                            );'''
-createTableDanmu='''
+                            );''',
+'createTableDanmu':'''
 create table if not exists Danmu(rowid varchar(31) primary key,
 
                             cid varchar(31) ,
@@ -53,9 +53,9 @@ create table if not exists Danmu(rowid varchar(31) primary key,
                             author varchar(31),                            
 
                             text varchar(255)
-                            );'''
-createTableVReply='''
-create table if not exists VReply(rpid varchar(31) primary key,
+                            );''',
+'createTableVReply':'''
+create table if not exists Reply(rpid varchar(31) primary key,
                             oid varchar(31),
 
                             mid varchar(31),
@@ -66,6 +66,11 @@ create table if not exists VReply(rpid varchar(31) primary key,
 
                             message text
                             );'''
+
+}
+
+def GetSql(sqlname):
+    return sqldic[sqlname]
 
 def CreateTable(cursor,conn,sql):
     cursor.execute(sql)
