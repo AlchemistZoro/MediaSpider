@@ -200,7 +200,7 @@ class ReplySpider(Spider):
     name = 'replyspider'
     url=r'http://api.bilibili.com/x/v2/reply?type={type}&oid={oid}&pn={pn}&ps={ps}'
     
-    def __init__(self,oid='974254684',type=1,pn=1,ps=20,*args,**kwargs):
+    def __init__(self,oid='974254684',type=1,pn=1,ps=40,*args,**kwargs):
         """初始化
 
             Args:
@@ -227,17 +227,17 @@ class ReplySpider(Spider):
             data=json.loads(response.text)['data']
             logging.warning(json.loads(response.text)['code'])
             # logging.warning(data)
-            item_list=[]
             RepliList=data['replies']
             for Repli in RepliList:
-                objRepli=ReplyInfoItem()
+                objRepli={}
                 objRepli['oid']=Repli['oid']
                 objRepli['message']=Repli['content']['message']
                 objRepli['mid']=Repli['mid']
                 objRepli['likes']=Repli['like']
                 objRepli['ctime']=Repli['ctime']
                 objRepli['rpid']=Repli['rpid']
-                item= objRepli
+
+                item= ReplyInfoItem(ReplyItem= objRepli)
                 yield item
         
         

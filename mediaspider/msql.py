@@ -6,7 +6,7 @@ import time
 
 sqldic={
 
-'createTableVinfo':'''
+'CreateTableVinfo':'''
 create table if not exists Vinfo(bvid varchar(31) primary key,
                             aid varchar(31),
                             cid varchar(31),
@@ -33,7 +33,7 @@ create table if not exists Vinfo(bvid varchar(31) primary key,
                             his_rank int(10),                            
                             mid varchar(31)
                             );''',
-'createTableDanmu':'''
+'CreateTableDanmu':'''
 create table if not exists Danmu(rowid varchar(31) primary key,
 
                             cid varchar(31) ,
@@ -54,7 +54,7 @@ create table if not exists Danmu(rowid varchar(31) primary key,
 
                             text varchar(255)
                             );''',
-'createTableVReply':'''
+'CreateTableReply':'''
 create table if not exists Reply(rpid varchar(31) primary key,
                             oid varchar(31),
 

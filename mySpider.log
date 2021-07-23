@@ -1,0 +1,109 @@
+2021-07-23 02:21:43 [mediaspider.middlewares] WARNING: response.status:200  request:http://api.bilibili.com/x/v2/reply?type=1&oid=974254684&pn=1&ps=1
+2021-07-23 02:21:43 [root] WARNING: 0
+2021-07-23 02:21:43 [scrapy.core.scraper] ERROR: Error processing {'ReplyItem': {'ctime': 1626968921,
+               'likes': 0,
+               'message': '抢我奶?！（准备开嚎ing...什么东西塞我嘴！竹子！吧唧吧唧吧唧吧唧吧唧）',
+               'mid': 26113666,
+               'oid': 974254684,
+               'rpid': 4969223677}}
+Traceback (most recent call last):
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/twisted/internet/defer.py", line 662, in _runCallbacks
+    current.result = callback(current.result, *args, **kw)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/scrapy/utils/defer.py", line 150, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/home/wzc/testcode/mediaspider/mediaspider/pipelines.py", line 68, in process_item
+    self.cursor.execute(sql, tuple(data.values()))
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1064, 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\'oid\': \'974254684\', \'message\': "\'抢我奶?！（准备开嚎ing...什么东西å\' at line 1')
+2021-07-23 02:26:25 [mediaspider.middlewares] WARNING: response.status:200  request:http://api.bilibili.com/x/v2/reply?type=1&oid=974254684&pn=1&ps=1
+2021-07-23 02:26:25 [root] WARNING: 0
+2021-07-23 02:26:25 [root] WARNING: insert ignore into Reply (ReplyItem) values (%s)
+2021-07-23 02:26:25 [scrapy.core.scraper] ERROR: Error processing {'ReplyItem': {'ctime': 1626968921,
+               'likes': 0,
+               'message': '抢我奶?！（准备开嚎ing...什么东西塞我嘴！竹子！吧唧吧唧吧唧吧唧吧唧）',
+               'mid': 26113666,
+               'oid': 974254684,
+               'rpid': 4969223677}}
+Traceback (most recent call last):
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/twisted/internet/defer.py", line 662, in _runCallbacks
+    current.result = callback(current.result, *args, **kw)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/scrapy/utils/defer.py", line 150, in f
+    return deferred_from_coro(coro_f(*coro_args, **coro_kwargs))
+  File "/home/wzc/testcode/mediaspider/mediaspider/pipelines.py", line 69, in process_item
+    self.cursor.execute(sql, tuple(data.values()))
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/cursors.py", line 148, in execute
+    result = self._query(query)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/cursors.py", line 310, in _query
+    conn.query(q)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 548, in query
+    self._affected_rows = self._read_query_result(unbuffered=unbuffered)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 775, in _read_query_result
+    result.read()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 1156, in read
+    first_packet = self.connection._read_packet()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/connections.py", line 725, in _read_packet
+    packet.raise_for_error()
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/protocol.py", line 221, in raise_for_error
+    err.raise_mysql_exception(self._data)
+  File "/home/wzc/anaconda3/lib/python3.8/site-packages/pymysql/err.py", line 143, in raise_mysql_exception
+    raise errorclass(errno, errval)
+pymysql.err.ProgrammingError: (1064, 'You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near \'\'oid\': \'974254684\', \'message\': "\'抢我奶?！（准备开嚎ing...什么东西å\' at line 1')
+2021-07-23 02:30:51 [mediaspider.middlewares] WARNING: response.status:200  request:http://api.bilibili.com/x/v2/reply?type=1&oid=974254684&pn=1&ps=1
+2021-07-23 02:30:51 [root] WARNING: 0
+2021-07-23 02:30:51 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [mediaspider.middlewares] WARNING: response.status:200  request:http://api.bilibili.com/x/v2/reply?type=1&oid=974254684&pn=1&ps=40
+2021-07-23 02:31:53 [root] WARNING: 0
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)
+2021-07-23 02:31:53 [root] WARNING: insert ignore into Reply (oid, message, mid, likes, ctime, rpid) values (%s, %s, %s, %s, %s, %s)

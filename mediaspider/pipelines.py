@@ -37,10 +37,10 @@ class MysqlPipeline():
       
         for table in tables:
             sqlname='CreateTable'+table
-            logging.warning(sqlname)
+            
 
             sql=GetSql(sqlname)
-            logging.warning(sql)
+            
 
             self.cursor.execute(sql)
             self.conn.commit()
@@ -54,17 +54,20 @@ class MysqlPipeline():
     def process_item(self, item, spider):
         if isinstance(item, ReplyInfoItem):
             table='Reply'
+            data=item['ReplyItem']
         elif isinstance(item, VInfoItem):
             table='Vinfo'
+
         elif isinstance(item, DanmuInfoItem):
             table='Danmu'
         elif isinstance(item, UInfoItem):
             table='UInfo'
-              
-        keys = ', '.join(item.keys())
-        values = ', '.join(['%s'] * len(item))
+
+        
+        keys = ', '.join(data.keys())
+        values = ', '.join(['%s'] * len(data))
         sql = 'insert ignore into %s (%s) values (%s)' % (table, keys, values)
-        self.cursor.execute(sql, tuple(item.values()))
+        self.cursor.execute(sql, tuple(data.values()))
         self.conn.commit()
 
         return item
