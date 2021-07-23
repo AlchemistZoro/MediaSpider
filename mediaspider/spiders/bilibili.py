@@ -1,4 +1,5 @@
 from scrapy import Spider, Request
+from scrapy.utils.trackref import NoneType
 from mediaspider.items import VInfoItem,ReplyInfoItem,DanmuInfoItem,UInfoItem
 import json
 import logging
@@ -55,7 +56,7 @@ class BilibiliSpider(Spider):
                 bvid=vinfo['bvid']
                 oid=vinfo['aid']
                 vurl=self.url_videoinfo.format(bvid=bvid)
-                rurl=self.url_reply.format(Type=1,oid=oid,pn=100,ps=40)
+                rurl=self.url_reply.format(Type=1,oid=oid,pn=100,ps=50)
                 logging.warning('======'  + str(bvid) + "======")
                 
                 yield Request(url=vurl, callback=self.ParseVideoInfo,dont_filter =True)
@@ -199,47 +200,57 @@ class ReplySpider(Spider):
 
     name = 'replyspider'
     url=r'http://api.bilibili.com/x/v2/reply?type={type}&oid={oid}&pn={pn}&ps={ps}'
-    
-    def __init__(self,oid='974254684',type=1,pn=1,ps=40,*args,**kwargs):
+    def __init__(self,oid='846685722',type=1,pn=1,ps=40):
         """初始化
 
             Args:
                 mid: 用户id
                 ps: 视频列表每页视频数量，默认100
         """
+        
 
-        super().__init__(*args, **kwargs)
+        # super().__init__(*args, **kwargs)
 
         self.oid=oid
         self.ps = ps
         self.pn=pn
         self.type=type
 
-        self.url = self.url.format(oid=oid, ps=ps, pn=pn,type=type)
-        self.start_urls = [self.url]
+        self.url = self.url.format(oid=self.oid,ps=self.ps, pn='{}',type=self.type)
+        self.start_urls = [self.url.format(self.pn)]
 
     def parse(self, response, **kwargs):
+       
 
         if json.loads(response.text)['code']==-412:
-            
+            # logging.warning(json.loads(response.text)['code'])
+            # logging.warning(json.loads(response.text))
+
             yield None
         else:
             data=json.loads(response.text)['data']
-            logging.warning(json.loads(response.text)['code'])
-            # logging.warning(data)
             RepliList=data['replies']
-            for Repli in RepliList:
-                objRepli={}
-                objRepli['oid']=Repli['oid']
-                objRepli['message']=Repli['content']['message']
-                objRepli['mid']=Repli['mid']
-                objRepli['likes']=Repli['like']
-                objRepli['ctime']=Repli['ctime']
-                objRepli['rpid']=Repli['rpid']
+            if isinstance(RepliList,list):
+                
+                for Repli in RepliList:
+                    objRepli={}
+                    objRepli['oid']=Repli['oid']
+                    objRepli['message']=Repli['content']['message']
+                    objRepli['mid']=Repli['mid']
+                    objRepli['likes']=Repli['like']
+                    objRepli['ctime']=Repli['ctime']
+                    objRepli['rpid']=Repli['rpid']
 
-                item= ReplyInfoItem(ReplyItem= objRepli)
-                yield item
-        
+                    item= ReplyInfoItem(ReplyItem= objRepli)
+                    yield item
+                self.pn+=1
+                logging.warning(len(RepliList))
+                
+                url = self.url.format(self.pn)
+
+                yield Request(url=url, callback=self.parse,dont_filter =True)
+
+            
         
         
 
