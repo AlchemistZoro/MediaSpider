@@ -65,6 +65,22 @@ create table if not exists Reply(rpid varchar(31) primary key,
                             ctime  varchar(31),
 
                             message text
+                            );''',
+
+'CreateTableVinfo_dynamic': '''                     create table if not exists Vinfo_dynamic(bvid varchar(31) ,
+                                                                           
+                            view int(10) ,
+                            danmaku int(10) ,
+                            reply int(10),
+                            likes int(10) ,
+                            dislikes int(10) ,
+                            coin int(10) ,
+                            favorite int(10),
+                            share int(10),
+                            now_rank int(10),
+                            his_rank int(10),                            
+                            mid varchar(31),
+							recordtime varchar(30) 
                             );'''
 
 }
@@ -106,26 +122,26 @@ def InsertVReply(data,cursor,conn):
     cursor.execute(sql, tuple(data.values()))
     conn.commit()
 
-def ProcessVideoInfo(vbid,MYSQL_DBNAME='bilibili',MYSQL_HOST='localhost',MYSQL_USER= 'root',MYSQL_PASSWD= '123456',MYSQL_PORT= 3306):
+# def ProcessVideoInfo(vbid,MYSQL_DBNAME='bilibili',MYSQL_HOST='localhost',MYSQL_USER= 'root',MYSQL_PASSWD= '123456',MYSQL_PORT= 3306):
    
-    conn = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWD, database=MYSQL_DBNAME,
-                                  port=MYSQL_PORT)
+#     conn = pymysql.connect(host=MYSQL_HOST, user=MYSQL_USER, password=MYSQL_PASSWD, database=MYSQL_DBNAME,
+#                                   port=MYSQL_PORT)
     
-    cursor = conn.cursor()
-    CreateTable(cursor,conn,createTableVinfo)
-    CreateTable(cursor,conn,createTableDanmu)
-    CreateTable(cursor,conn,createTableVReply)
+#     cursor = conn.cursor()
+#     CreateTable(cursor,conn,createTableVinfo)
+#     CreateTable(cursor,conn,createTableDanmu)
+#     CreateTable(cursor,conn,createTableVReply)
 
-    DanmuList,VInfoObj,VReplyList=GetAllInfoByBid(vbid)
+#     DanmuList,VInfoObj,VReplyList=GetAllInfoByBid(vbid)
     
-    InsertVInfo(VInfoObj,cursor,conn)
-    for Danmu in  DanmuList:
-        InsertDanmu(Danmu,cursor,conn)
-    for Reply in  VReplyList:   
-        InsertVReply(Reply,cursor,conn)
-    # print('finishi video :'+vbid)
-    cursor.close()
-    conn.close()
+#     InsertVInfo(VInfoObj,cursor,conn)
+#     for Danmu in  DanmuList:
+#         InsertDanmu(Danmu,cursor,conn)
+#     for Reply in  VReplyList:   
+#         InsertVReply(Reply,cursor,conn)
+#     # print('finishi video :'+vbid)
+#     cursor.close()
+#     conn.close()
 
 
 if __name__ == "__main__":

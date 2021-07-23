@@ -7,16 +7,19 @@ from scrapy import Item,Field
 
 
 class VInfoItem(Item):
-    VinfoItem=Field()
- 
+    VItem=Field()
+
+class VInfoDynamicItem(Item):
+    VItem=Field()
+
 class ReplyInfoItem(Item):
-    ReplyItem=Field()
+    RItem=Field()
 
 class DanmuInfoItem(Item):
-    DanmuItem=Field()
+    DItem=Field()
 
 class UInfoItem(Item):
-    UInfoItem=Field()
+    UItem=Field()
 
 
 

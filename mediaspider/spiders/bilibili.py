@@ -1,12 +1,13 @@
 from scrapy import Spider, Request
+from scrapy.item import DictItem
 from scrapy.utils.trackref import NoneType
-from mediaspider.items import VInfoItem,ReplyInfoItem,DanmuInfoItem,UInfoItem
+from mediaspider.items import VInfoItem,ReplyInfoItem,DanmuInfoItem,UInfoItem,VInfoDynamicItem
 import json
 import logging
 import requests
 import re
 import time
-
+import datetime
 
 class BilibiliSpider(Spider):     
     name = 'bilibili'
@@ -190,12 +191,119 @@ class BilibiliSpider(Spider):
 # class KeyWordSpider(Spider):
 #     url=
 
-# class VInfoSpider(Spider):
-#     url=r'http://api.bilibili.com/x/web-interface/view?bvid={bvid}'
+class VInfoSpider(Spider):
 
-# class DanmuSpder(Spider):
-#     url=
+    url=r'http://api.bilibili.com/x/web-interface/view?bvid={bvid}'
+    name='vinfospider'
 
+
+    def __init__(self,bvid='BV1154y1n75N',addition=True):
+       self.bvid=bvid
+       self.addition=addition
+       self.start_urls = [self.url.format(bvid=self.bvid)]
+
+    def parse(self, response):
+
+        if json.loads(response.text)['code']==0:
+
+            data=json.loads(response.text)['data']
+            vdict={}
+            #基本信息
+            
+                           
+            
+            vdict['bvid'] = data['bvid']  # 视频ID
+            
+            #视频状态
+            stat=data['stat']            
+            vdict['view'] = stat['view']  # 播放数
+            vdict['danmaku ']= stat['danmaku']   # 弹幕数
+            vdict['reply'] = stat['reply']   # 评论数
+            vdict['likes'] = stat['like']   # 点赞数
+            vdict['dislikes'] = stat['dislike']   # 点踩数
+            vdict['coin'] = stat['coin']   # 投币数
+            vdict['favorite ']= stat['favorite']   # 收藏数
+            vdict['share'] = stat['share']  # 分享数
+            vdict['now_rank']=stat['now_rank'] #当前排名 
+            vdict['his_rank']=stat['his_rank'] #历史最高排名
+
+            # UP主信息
+            owner=data['owner']
+            vdict['mid'] = owner['mid']  # UP主ID
+
+            if self.addition:
+                vdict['recordtime']=time.time()
+                logging.warning(time.time())
+                item= VInfoDynamicItem(VItem= vdict) 
+                return item
+
+
+            vdict['aid'] = data['aid']  # 视频ID
+            vdict['cid ']= data['cid']  # 弹幕连接id
+            vdict['tid ']= data['tid']  # 区       
+            vdict['iscopy']=data['copyright'] # 是否转载  
+            vdict['tname']=data['tname']  # 子分区
+            vdict['pic'] = data['pic']  # 封面
+            vdict['title'] = data['title']  # 标题
+            vdict['descs'] = data['desc']  # 简介
+            vdict['duration'] = data['duration']  # 总时长，所有分P时长总和
+            vdict['dimension']=str(data['dimension'] ) #视频1P分辨率
+            vdict['videos ']= data['videos']  # 分P数
+            vdict['pubdate ']= data['pubdate']  # 发布时间
+            vdict['ctime']=data['ctime'] #用户投稿时间 
+
+            item= VInfoItem(VItem= vdict) 
+
+
+            return item
+
+class DanmuSpder(Spider):
+    name = 'danmuspider'
+    url=r'https://comment.bilibili.com/{cid}.xml'
+    def __init__(self,cid='21994000'):
+        """初始化
+
+            Args:
+                oid: 用户id
+                ps: 视频列表每页视频数量，默认100
+        """
+        self.cid=cid
+
+        self.url = self.url.format(cid=cid)
+        self.start_urls = [self.url]
+
+    # def start_requests(self):
+    #      yield Request(url=self.url, callback=self.parse,dont_filter =True)
+
+    def parse(self, response):
+        
+        if response.status==200:
+            data=response.text
+            reDanmu = re.compile(
+        r'<d p="(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?),(.*?)">(.*?)</d>')
+            listDanmu = re.findall(reDanmu, data)
+            listDictDanmu = []
+            for itemDanmu in listDanmu:
+                #去除高级弹幕
+                
+                if itemDanmu[8] == '':
+                    continue
+                if itemDanmu[8][0]=='[' :
+                    continue
+                dictItemDanmu = {}
+                dictItemDanmu["cid"] = self.cid
+                dictItemDanmu["floattime"] = float(itemDanmu[0])
+                dictItemDanmu["mode"] = itemDanmu[1]
+                dictItemDanmu["size"] = itemDanmu[2]
+                dictItemDanmu["color"] = itemDanmu[3]
+                dictItemDanmu["timestamp"] = itemDanmu[4]
+                dictItemDanmu["pool"] = itemDanmu[5]
+                dictItemDanmu["author"] = itemDanmu[6]
+                dictItemDanmu["rowid"] = itemDanmu[7]
+                dictItemDanmu["text"] = itemDanmu[8]
+                item= DanmuInfoItem(DItem= dictItemDanmu)               
+                yield item
+               
 class ReplySpider(Spider):
 
     name = 'replyspider'
@@ -204,13 +312,9 @@ class ReplySpider(Spider):
         """初始化
 
             Args:
-                mid: 用户id
+                oid: 用户id
                 ps: 视频列表每页视频数量，默认100
         """
-        
-
-        # super().__init__(*args, **kwargs)
-
         self.oid=oid
         self.ps = ps
         self.pn=pn
@@ -241,7 +345,7 @@ class ReplySpider(Spider):
                     objRepli['ctime']=Repli['ctime']
                     objRepli['rpid']=Repli['rpid']
 
-                    item= ReplyInfoItem(ReplyItem= objRepli)
+                    item= ReplyInfoItem(RItem= objRepli)
                     yield item
                 self.pn+=1
                 logging.warning(len(RepliList))

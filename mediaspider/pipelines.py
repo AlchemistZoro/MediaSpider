@@ -4,7 +4,7 @@ from scrapy import Request
 from scrapy.exceptions import DropItem
 from scrapy.pipelines.images import ImagesPipeline
 from mediaspider.msql import GetSql
-from mediaspider.items import DanmuInfoItem,VInfoItem,ReplyInfoItem,UInfoItem
+from mediaspider.items import DanmuInfoItem,VInfoItem,ReplyInfoItem,UInfoItem,VInfoDynamicItem
 import logging
 
 
@@ -30,18 +30,14 @@ class MysqlPipeline():
         )
     
     def open_spider(self, spider):
-        tables = ['Vinfo','Reply','Danmu']
+        tables = ['Vinfo','Reply','Danmu','Vinfo_dynamic']
         self.conn = pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database,
                                   port=self.port)
         self.cursor = self.conn.cursor()
       
         for table in tables:
             sqlname='CreateTable'+table
-            
-
             sql=GetSql(sqlname)
-            
-
             self.cursor.execute(sql)
             self.conn.commit()
 
@@ -54,14 +50,19 @@ class MysqlPipeline():
     def process_item(self, item, spider):
         if isinstance(item, ReplyInfoItem):
             table='Reply'
-            data=item['ReplyItem']
+            data=item['RItem']
         elif isinstance(item, VInfoItem):
             table='Vinfo'
-
+            data=item['VItem']
         elif isinstance(item, DanmuInfoItem):
             table='Danmu'
+            data=item['DItem']
         elif isinstance(item, UInfoItem):
             table='UInfo'
+            data=['UItem']
+        elif isinstance(item,VInfoDynamicItem):
+            table='Vinfo_dynamic'
+            data=item['VItem']
 
         
         keys = ', '.join(data.keys())
