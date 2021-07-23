@@ -9,6 +9,8 @@ import re
 import time
 import datetime
 
+
+
 class BilibiliSpider(Spider):     
     name = 'bilibili'
     
@@ -178,39 +180,41 @@ class BilibiliSpider(Spider):
 
 
 
+# class KeyWordSpider(Spider):
+#     url=
 
 # class PartitionSpider(Spider):
 #     url=
 
-# class UserSpider(Spider):
-#     url=
 
-# class RankSpider(Spider):
-#     url=
 
-# class KeyWordSpider(Spider):
-#     url=
 
-class VInfoSpider(Spider):
 
-    url=r'http://api.bilibili.com/x/web-interface/view?bvid={bvid}'
+
+
+
+
+class VInfoSpider(Spider):    
     name='vinfospider'
 
-
+    url=r'http://api.bilibili.com/x/web-interface/view?bvid={bvid}'
     def __init__(self,bvid='BV1154y1n75N',addition=True):
        self.bvid=bvid
        self.addition=addition
-       self.start_urls = [self.url.format(bvid=self.bvid)]
+       
+    #    self.start_urls = [self.url.format(bvid=self.bvid)]
+
+    def start_requests(self):
+        # logging.warning(self.url.format(bvid=self.bvid))
+        yield Request(self.url.format(bvid=self.bvid),callback=self.parse)
 
     def parse(self, response):
-
         if json.loads(response.text)['code']==0:
 
             data=json.loads(response.text)['data']
             vdict={}
             #基本信息
-            
-                           
+                                       
             
             vdict['bvid'] = data['bvid']  # 视频ID
             
@@ -233,7 +237,7 @@ class VInfoSpider(Spider):
 
             if self.addition:
                 vdict['recordtime']=time.time()
-                logging.warning(time.time())
+                # logging.warning(time.time())
                 item= VInfoDynamicItem(VItem= vdict) 
                 return item
 
@@ -256,6 +260,9 @@ class VInfoSpider(Spider):
 
 
             return item
+    
+    # def GetVinfo(self, response):
+
 
 class DanmuSpder(Spider):
     name = 'danmuspider'
@@ -269,11 +276,12 @@ class DanmuSpder(Spider):
         """
         self.cid=cid
 
-        self.url = self.url.format(cid=cid)
-        self.start_urls = [self.url]
+        # self.url = self.url.format(cid=cid)
+        # self.start_urls = [self.url]
 
-    # def start_requests(self):
-    #      yield Request(url=self.url, callback=self.parse,dont_filter =True)
+    def start_requests(self):
+        
+        yield Request(self.url.format(cid=self.cid),callback=self.parse)
 
     def parse(self, response):
         
@@ -308,7 +316,7 @@ class ReplySpider(Spider):
 
     name = 'replyspider'
     url=r'http://api.bilibili.com/x/v2/reply?type={type}&oid={oid}&pn={pn}&ps={ps}'
-    def __init__(self,oid='846685722',type=1,pn=1,ps=40):
+    def __init__(self,oid='846685722',type=1,pn=0,ps=40):
         """初始化
 
             Args:
@@ -319,9 +327,12 @@ class ReplySpider(Spider):
         self.ps = ps
         self.pn=pn
         self.type=type
+        self.url=self.url.format(pn='{}',oid=self.oid,type=self.type,ps=self.ps)
+        # self.start_urls = [self.url.format(self.pn)]
 
-        self.url = self.url.format(oid=self.oid,ps=self.ps, pn='{}',type=self.type)
-        self.start_urls = [self.url.format(self.pn)]
+    def start_requests(self):
+        url=self.url.format(self.pn)            
+        yield Request(url,callback=self.parse)
 
     def parse(self, response, **kwargs):
        
@@ -354,7 +365,56 @@ class ReplySpider(Spider):
 
                 yield Request(url=url, callback=self.parse,dont_filter =True)
 
+
+
+# class UInfoSpider(Spider):
+
+
+
+class UserVideoSpider(Spider):
+    name = 'uservideospider'
+    
+    url_userspace=r'https://api.bilibili.com/x/space/arc/search?mid={mid}&pn={pn}&ps={ps}'
+ 
+    
+    def __init__(self, mid='672328094', ps: int=None):
+
+
+        if mid is None: mid = 546195  #用户的id 老番茄 546195 番剧 928123 影视 15773384 嘉然 672328094
+        if ps is None: ps = 100
+
+        self.mid = mid
+        self.ps = ps
+  
+        self.url = self.url_userspace.format(mid=mid, ps=ps, pn='{}')
+        self.pn = 1
+        self.start_urls = [self.url.format(self.pn)]
+
+    def parse(self, response):
+        
+        jresponse=json.loads(response.text)
+        
+        vlist=jresponse['data']['list']['vlist']
+        if len(vlist)>0:
+            for vinfo in vlist:
+                bvid=vinfo['bvid']
+                vs=VInfoSpider(bvid=bvid)
+                yield Request(vs.url.format(bvid=bvid),callback=vs.parse)
+
+
+            self.pn += 1
+            url = self.url.format(self.pn)
+            yield Request(url=url, callback=self.parse,dont_filter = True)
             
+    
+    
+# class RankSpider(Spider):
+#     url=
+
+
+
+
+
         
         
 
