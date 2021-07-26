@@ -106,7 +106,7 @@ HTTPERROR_ALLOWED_CODES = [401, 403, 407, 408, 414, 500, 502, 503, 504,412]
 
 
 
-LOG_FILE="mySpider.log"
+LOG_FILE="m.log"
 LOG_LEVEL="WARNING"
 LOG_STDOUT =True
 
@@ -127,6 +127,12 @@ MYSQL_PASSWD = '123456'
 MYSQL_PORT = 3306
 
 
+# MYSQL_HOST = 'rm-bp15x62q3095543qygo.mysql.rds.aliyuncs.com'
+# MYSQL_DBNAME = 'pipeline'
+# MYSQL_USER = 'mollnn'
+# MYSQL_PASSWD = 'Abc123456'
+# MYSQL_PORT = 3306
+
 # custom_settings = {
 #         "RANDOM_DELAY": 3,
 #         "DOWNLOADER_MIDDLEWARES": {
@@ -134,13 +140,10 @@ MYSQL_PORT = 3306
 #         }
 #     }
 
-#DOWNLOAD_DELAY = 1
+DOWNLOAD_DELAY =0.1
 # RANDOMIZE_DOWNLOAD_DELAY = True
 
 RETRY_TIMES=5
-
-
-
 
 USER_AGENT_LIST=[
     "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.1 (KHTML, like Gecko) Chrome/22.0.1207.1 Safari/537.1",

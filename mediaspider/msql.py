@@ -5,7 +5,17 @@ import argparse
 import time
 
 sqldic={
+'CreateTableUinfo':'''create table if not exists Uinfo(mid varchar(31) primary key,
+														archive_count int(10),
+														fans int(10),
+														attention int(10),													
+														mname varchar(31),
+														sex   int(2),
+														face  varchar(255),
+														sign  varchar(255),
+														levels int(2)
 
+                            );''',
 'CreateTableVinfo':'''
 create table if not exists Vinfo(bvid varchar(31) primary key,
                             aid varchar(31),

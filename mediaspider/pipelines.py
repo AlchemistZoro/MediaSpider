@@ -30,7 +30,7 @@ class MysqlPipeline():
         )
     
     def open_spider(self, spider):
-        tables = ['Vinfo','Reply','Danmu','Vinfo_dynamic']
+        tables = ['Vinfo','Reply','Danmu','Vinfo_dynamic','Uinfo']
         self.conn = pymysql.connect(host=self.host, user=self.user, password=self.password, database=self.database,
                                   port=self.port)
         self.cursor = self.conn.cursor()
@@ -58,13 +58,13 @@ class MysqlPipeline():
             table='Danmu'
             data=item['DItem']
         elif isinstance(item, UInfoItem):
-            table='UInfo'
-            data=['UItem']
+            table='Uinfo'
+            data=item['UItem']
         elif isinstance(item,VInfoDynamicItem):
             table='Vinfo_dynamic'
             data=item['VItem']
 
-        
+        logging.warning(data)
         keys = ', '.join(data.keys())
         values = ', '.join(['%s'] * len(data))
         sql = 'insert ignore into %s (%s) values (%s)' % (table, keys, values)

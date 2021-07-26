@@ -175,25 +175,6 @@ class BilibiliSpider(Spider):
                 item= objRepli
                 yield item
                   
-    
-
-
-
-
-# class KeyWordSpider(Spider):
-#     url=
-
-# class PartitionSpider(Spider):
-#     url=
-
-
-
-
-
-
-
-
-
 class VInfoSpider(Spider):    
     name='vinfospider'
 
@@ -263,7 +244,6 @@ class VInfoSpider(Spider):
     
     # def GetVinfo(self, response):
 
-
 class DanmuSpder(Spider):
     name = 'danmuspider'
     url=r'https://comment.bilibili.com/{cid}.xml'
@@ -316,7 +296,7 @@ class ReplySpider(Spider):
 
     name = 'replyspider'
     url=r'http://api.bilibili.com/x/v2/reply?type={type}&oid={oid}&pn={pn}&ps={ps}'
-    def __init__(self,oid='846685722',type=1,pn=0,ps=40):
+    def __init__(self,oid='846685722',type=1,pn=1,ps=40):
         """初始化
 
             Args:
@@ -329,18 +309,19 @@ class ReplySpider(Spider):
         self.type=type
         self.url=self.url.format(pn='{}',oid=self.oid,type=self.type,ps=self.ps)
         # self.start_urls = [self.url.format(self.pn)]
-
+        self.count=0
+        self.wrong=0
     def start_requests(self):
         url=self.url.format(self.pn)            
         yield Request(url,callback=self.parse)
 
     def parse(self, response, **kwargs):
-       
+        self.count+=1
 
         if json.loads(response.text)['code']==-412:
             # logging.warning(json.loads(response.text)['code'])
-            # logging.warning(json.loads(response.text))
-
+            logging.warning(json.loads(response.text))
+            self.wrong+=1
             yield None
         else:
             data=json.loads(response.text)['data']
@@ -364,11 +345,107 @@ class ReplySpider(Spider):
                 url = self.url.format(self.pn)
 
                 yield Request(url=url, callback=self.parse,dont_filter =True)
+        # logging.warning(self.oid,"parse 执行了",self.count,"次。失败率：",self.wrong/self.count)
+   
+class UserInfoSpider(Spider): 
+    name='userspider'
+    cookies= {}
+    url1=r'http://api.bilibili.com/x/space/acc/info?mid={mid}'
+    url2=r'http://api.bilibili.com/x/web-interface/card?mid={mid}'
 
+    def __init__(self,mid='672328094',addition=False,cookies={'SESSDATA':'3589d867%2C1634960121%2Ca96e9e71'}):
+       self.mid=mid
+       self.addition=addition
+       self.cookies=cookies
+       self.udict={}
+    #    self.start_urls = [self.url.format(bvid=self.bvid)]
+
+    def start_requests(self):
+        # logging.warning(self.url.format(bvid=self.bvid))
+        yield Request(self.url2.format(mid=self.mid),cookies=self.cookies,callback=self.url2parse)
+        
+
+    def url1parse(self, response):
+        if json.loads(response.text)['code']==0:
+
+            data=json.loads(response.text)['data']
+            udict={}
+            #基本信息
+            self.udict['mid']=self.mid
+            self.udict['sex']=data['sex']
+            self.udict['face']=data['face']
+            self.udict['sign']=data['sign']
+            self.udict['level']=data['level']
+            self.udict['coins']=data['coins']               
+            # logging.warning(self.udict)           
+            yield Request(self.url2.format(mid=self.mid),cookies=self.cookies,callback=self.url2parse)
+            # vdict['bvid'] = data['bvid']  # 视频ID
+            
+            # #视频状态
+            # stat=data['stat']            
+            # vdict['view'] = stat['view']  # 播放数
+            # vdict['danmaku ']= stat['danmaku']   # 弹幕数
+            # vdict['reply'] = stat['reply']   # 评论数
+            # vdict['likes'] = stat['like']   # 点赞数
+            # vdict['dislikes'] = stat['dislike']   # 点踩数
+            # vdict['coin'] = stat['coin']   # 投币数
+            # vdict['favorite ']= stat['favorite']   # 收藏数
+            # vdict['share'] = stat['share']  # 分享数
+            # vdict['now_rank']=stat['now_rank'] #当前排名 
+            # vdict['his_rank']=stat['his_rank'] #历史最高排名
+
+            # # UP主信息
+            # owner=data['owner']
+            # vdict['mid'] = owner['mid']  # UP主ID
+
+            # if self.addition:
+            #     vdict['recordtime']=time.time()
+            #     # logging.warning(time.time())
+            #     item= VInfoDynamicItem(VItem= vdict) 
+            #     return item
+
+
+            # vdict['aid'] = data['aid']  # 视频ID
+            # vdict['cid ']= data['cid']  # 弹幕连接id
+            # vdict['tid ']= data['tid']  # 区       
+            # vdict['iscopy']=data['copyright'] # 是否转载  
+            # vdict['tname']=data['tname']  # 子分区
+            # vdict['pic'] = data['pic']  # 封面
+            # vdict['title'] = data['title']  # 标题
+            # vdict['descs'] = data['desc']  # 简介
+            # vdict['duration'] = data['duration']  # 总时长，所有分P时长总和
+            # vdict['dimension']=str(data['dimension'] ) #视频1P分辨率
+            # vdict['videos ']= data['videos']  # 分P数
+            # vdict['pubdate ']= data['pubdate']  # 发布时间
+            # vdict['ctime']=data['ctime'] #用户投稿时间 
+
+            item= UInfoItem(UItem= self.udict) 
+            return item
+            
+    def url2parse(self,response):
+        # logging.warning(response.text)
+        if json.loads(response.text)['code']==0:
+
+            data=json.loads(response.text)['data']
+            self.udict['archive_count']=data['archive_count']
+            card=data['card']     
+
+            self.udict['fans']=card['fans']
+            self.udict['attention']=card['attention']
+            
+            
+            self.udict['mid']=card['mid']
+            self.udict['mname']=card['name']
+            self.udict['sex']=card['sex']
+            self.udict['face']=card['face']
+            self.udict['sign']=card['sign']
+            self.udict['levels']=card['level_info']['current_level']
+            
+            item= UInfoItem(UItem= self.udict) 
+            return item
 
 
 # class UInfoSpider(Spider):
-
 
 
 class UserVideoSpider(Spider):
@@ -377,7 +454,7 @@ class UserVideoSpider(Spider):
     url_userspace=r'https://api.bilibili.com/x/space/arc/search?mid={mid}&pn={pn}&ps={ps}'
  
     
-    def __init__(self, mid='672328094', ps: int=None):
+    def __init__(self, mid='672328094', ps: int=None,arglist=[],addition=True):
 
 
         if mid is None: mid = 546195  #用户的id 老番茄 546195 番剧 928123 影视 15773384 嘉然 672328094
@@ -389,6 +466,8 @@ class UserVideoSpider(Spider):
         self.url = self.url_userspace.format(mid=mid, ps=ps, pn='{}')
         self.pn = 1
         self.start_urls = [self.url.format(self.pn)]
+        self.arglist=arglist
+        self.addition=addition
 
     def parse(self, response):
         
@@ -398,8 +477,22 @@ class UserVideoSpider(Spider):
         if len(vlist)>0:
             for vinfo in vlist:
                 bvid=vinfo['bvid']
-                vs=VInfoSpider(bvid=bvid)
+                vs=VInfoSpider(bvid=bvid,addition=self.addition)
                 yield Request(vs.url.format(bvid=bvid),callback=vs.parse)
+                if 'danmu' in self.arglist:
+                    cid=vinfo['cid']
+                    ds=DanmuSpder(cid=cid)
+                    yield Request(ds.url,callback=ds.parse)
+                    
+                    # ds.start_requests()
+                if 'reply' in self.arglist:
+                    logging.warning("add")
+                    aid=vinfo['aid']
+                    rs=ReplySpider(oid=aid)
+                    yield Request(rs.url.format(1),callback=rs.parse)
+                    # rs.start_requests()
+                # logging.warning("skip?")
+                
 
 
             self.pn += 1
@@ -410,6 +503,18 @@ class UserVideoSpider(Spider):
     
 # class RankSpider(Spider):
 #     url=
+
+
+
+# class KeyWordSpider(Spider):
+#     url=
+
+# class PartitionSpider(Spider):
+#     url=
+
+
+
+
 
 
 
