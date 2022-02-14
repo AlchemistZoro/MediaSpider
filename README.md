@@ -1,3 +1,2 @@
 
-懒得很，现在暂时不想写文档。
-啊吧啊吧。
+spider for different platform
